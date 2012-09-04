@@ -145,7 +145,18 @@ static ERL_NIF_TERM new_parser(ErlNifEnv *env, int argc, const ERL_NIF_TERM argv
     expat_parser *parser_data = (expat_parser *)enif_alloc(sizeof(expat_parser));
     ERL_NIF_TERM parser_resource;
 
-    parser = XML_ParserCreate_MM("UTF-8", &ms, "\n");
+    // this is the variant from esl/exml:208d5e17e547b303b310627e3e525b57b2843e83
+    /*parser = XML_ParserCreate_MM("UTF-8", &ms, "\n");*/
+
+    // this makes the tests pass, but according to expat documentation it turns namespace support off
+    /*parser = XML_ParserCreate_MM("UTF-8", &ms, NULL);*/
+
+    // this is a try to preserve namespace support but make the tests pass;
+    // this is the character defined as a macro in xmlwf sources for namespace-enabled parser
+    /*XML_Char namespaceSeparator = '\001';*/
+    /*parser = XML_ParserCreate_MM("UTF-8", &ms, &namespaceSeparator);*/
+    parser = XML_ParserCreate_MM("UTF-8", &ms, ":");
+
     parser_data->env = env;
     parser_data->xmlns = (ERL_NIF_TERM)NULL;
 
