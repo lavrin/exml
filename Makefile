@@ -1,42 +1,35 @@
-.PHONY: rel deps test
+all: priv/exml_event.so priv/exml_escape.so \
+	ebin/exml.beam ebin/exml_event.beam ebin/exml_query.beam \
+	ebin/exml_stream.beam
 
-all: deps compile
+CWD := $(shell pwd)
 
-compile: rebar
-	./rebar compile
+ebin/%.beam: src/%.erl
+	erlc -I$(CWD)/src -I$(CWD)/include -pa $(CWD)/ebin -o ebin src/$*.erl
 
-deps: rebar
-	./rebar get-deps
+priv/exml_event.so: c_src/exml_event.o
+	cc c_src/exml_event.o -fPIC -lexpat -shared \
+		-L/home/erszcz/apps/erlang/17.0/lib/erl_interface-3.7.16/lib \
+		-lerl_interface -lei -o priv/exml_event.so
 
-clean: rebar
-	./rebar clean
+c_src/exml_event.o: c_src/exml_event.c
+	cc -c -g -Wall -g -Wall -fPIC \
+		-I/home/erszcz/apps/erlang/17.0/lib/erl_interface-3.7.16/include \
+		-I/home/erszcz/apps/erlang/17.0/erts-6.0/include \
+	  	c_src/exml_event.c -o c_src/exml_event.o
 
-test: compile
-	./rebar skip_deps=true eunit
+priv/exml_escape.so: c_src/exml_escape.o
+	cc c_src/exml_escape.o -fPIC -shared \
+		-L/home/erszcz/apps/erlang/17.0/lib/erl_interface-3.7.16/lib \
+		-lerl_interface -lei -o priv/exml_escape.so
 
-rebar:
-	wget https://github.com/rebar/rebar/releases/download/2.5.1/rebar && chmod u+x rebar
+c_src/exml_escape.o: c_src/exml_escape.c
+	cc -c -g -Wall -g -Wall -fPIC \
+	   	-I/home/erszcz/apps/erlang/17.0/lib/erl_interface-3.7.16/include \
+		-I/home/erszcz/apps/erlang/17.0/erts-6.0/include \
+	  	c_src/exml_escape.c -o c_src/exml_escape.o
 
-dialyzer/erlang.plt:
-	@mkdir -p dialyzer
-	@dialyzer --build_plt --output_plt dialyzer/erlang.plt \
-	-o dialyzer/erlang.log --apps kernel stdlib erts; \
-	status=$$? ; if [ $$status -ne 2 ]; then exit $$status; else exit 0; fi
-
-dialyzer/exml.plt:
-	@mkdir -p dialyzer
-	@dialyzer --build_plt --output_plt dialyzer/exml.plt \
-	-o dialyzer/exml.log ebin; \
-	status=$$? ; if [ $$status -ne 2 ]; then exit $$status; else exit 0; fi
-
-erlang_plt: dialyzer/erlang.plt
-	@dialyzer --plt dialyzer/erlang.plt --check_plt -o dialyzer/erlang.log; \
-	status=$$? ; if [ $$status -ne 2 ]; then exit $$status; else exit 0; fi
-
-exml_plt: dialyzer/exml.plt
-	@dialyzer --plt dialyzer/exml.plt --check_plt -o dialyzer/exml.log; \
-	status=$$? ; if [ $$status -ne 2 ]; then exit $$status; else exit 0; fi
-
-dialyzer: erlang_plt exml_plt
-	@dialyzer --plts dialyzer/*.plt --no_check_plt \
-	--get_warnings -o dialyzer/error.log ebin
+clean:
+	-rm ebin/*.beam
+	-rm priv/*
+	-rm c_src/*.o
