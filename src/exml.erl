@@ -5,6 +5,9 @@
 %%%
 %%% @end
 %%% Created : 12 Jul 2011 by Michal Ptaszek <michal.ptaszek@erlang-solutions.com>
+%%%
+%%% Parts of this file, explicitly marked in the code, were taken from
+%%% https://github.com/erszcz/rxml
 %%%-------------------------------------------------------------------
 -module(exml).
 
@@ -16,6 +19,7 @@
          to_binary/1,
          to_iolist/1,
          xml_size/1,
+         xml_sort/1,
          to_pretty_iolist/1]).
 
 -export([]).
@@ -52,6 +56,32 @@ xml_size({Key, Value}) ->
     byte_size(Key)
     + 4 % ="" and whitespace before
     + byte_size(Value).
+
+%% @doc Sort a (list of) `xmlel()`.
+%%
+%% Sorting is defined as calling `lists:sort/1` at:
+%% * all the `xmlel's provided (if there is a list of them) AND
+%% * all the `xmlel' elements' attributes recursively (the root and descendants) AND
+%% * all the `xmlel' children recursively (the root and descendants).
+%% The order is ascending.
+%%
+%% The implementation of this function is subtle modification of
+%% https://github.com/erszcz/rxml/commit/e8483408663f0bc2af7896e786c1cdea2e86e43d
+-spec xml_sort(item() | [item()]) -> item() | [item()].
+xml_sort(#xmlcdata{} = Cdata) ->
+    Cdata;
+xml_sort(#xmlel{} = El) ->
+    #xmlel{ attrs = Attrs, children = Children } = El,
+    El#xmlel{
+      attrs = lists:sort(Attrs),
+      children = [ xml_sort(C) || C <- Children ]
+     };
+xml_sort(#xmlstreamstart{ attrs = Attrs } = StreamStart) ->
+    StreamStart#xmlstreamstart{ attrs = lists:sort(Attrs) };
+xml_sort(#xmlstreamend{} = StreamEnd) ->
+    StreamEnd;
+xml_sort(Elements) when is_list(Elements) ->
+    lists:sort([ xml_sort(E) || E <- Elements ]).
 
 -spec to_list(element() | [exml_stream:element()]) -> string().
 to_list(Element) ->
