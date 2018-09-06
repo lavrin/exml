@@ -11,9 +11,12 @@ otp_release:
 install:
         - make
         - make test-compile
+        - travis_retry pip install --user codecov
 script:
         - make test
         - make dialyzer
 
 after_success:
-    - make coverage-report
+        - make coverage-report
+        - make codecov
+        - codecov
