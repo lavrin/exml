@@ -20,8 +20,8 @@ test-compile: rebar3 test-deps
 test: test-compile
 	./rebar3 eunit
 
-coverage-report: $(shell ls -1rt `find .eunit -type f -name \*.coverdata 2>/dev/null` | tail -n1)
-	erl -noshell -pa ebin deps/*/ebin -eval 'ecoveralls:travis_ci("$?"), init:stop()'
+coverage-report: _build/test/cover/eunit.coverdata
+	./rebar3 coveralls send
 
 rebar3:
 	wget https://github.com/erlang/rebar3/releases/download/3.6.1/rebar3 &&\
