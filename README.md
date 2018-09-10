@@ -9,8 +9,8 @@ and doing some basic XML structures manipulation.
 Building
 ========
 
-**exml** is a rebar-compatible OTP application, run `make` or
-`./rebar compile` in order to build it.
+**exml** is a rebar3-compatible OTP application, run `make` or
+`./rebar3 compile` in order to build it.
 
 As a requirement, development headers for expat library are
 required.
