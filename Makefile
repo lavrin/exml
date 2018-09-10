@@ -23,6 +23,9 @@ test: test-compile
 coverage-report: _build/test/cover/eunit.coverdata
 	./rebar3 coveralls send
 
+codecov: _build/test/cover/eunit.coverdata
+	./rebar3 codecov analyze
+
 rebar3:
 	wget https://github.com/erlang/rebar3/releases/download/3.6.1/rebar3 &&\
 	chmod u+x rebar3
