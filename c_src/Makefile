@@ -34,7 +34,6 @@ endif
 
 CXXFLAGS += -std=c++11 -Wall -fPIC -O3 -I $(ERTS_INCLUDE_DIR) -I $(ERL_INTERFACE_INCLUDE_DIR)
 LDLIBS += -L $(ERL_INTERFACE_LIB_DIR) -lerl_interface -lei
-LDFLAGS += -shared
 
 # Verbosity.
 
@@ -54,7 +53,7 @@ COMPILE_CPP = $(cpp_verbose) $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c
 
 $(EXML_NIF): exml.o
 	@mkdir -p $(BASEDIR)/priv/
-	$(link_verbose) $(CXX) $^ $(LDFLAGS) $(LDLIBS) -o $@
+	$(link_verbose) $(CXX) $^ $(LDFLAGS) -shared $(LDLIBS) -o $@
 
 %.o: %.cpp
 	$(COMPILE_CPP) $(OUTPUT_OPTION) $<
