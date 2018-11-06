@@ -21,10 +21,10 @@ test: test-compile
 	./rebar3 eunit
 
 coverage-report: _build/test/cover/eunit.coverdata
-	./rebar3 coveralls send
+	./rebar3 as test coveralls send
 
 codecov: _build/test/cover/eunit.coverdata
-	./rebar3 codecov analyze
+	./rebar3 as test codecov analyze
 
 rebar3:
 	wget https://github.com/erlang/rebar3/releases/download/3.6.1/rebar3 &&\
