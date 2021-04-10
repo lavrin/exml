@@ -22,8 +22,6 @@
          xml_sort/1,
          to_pretty_iolist/1]).
 
--export([]).
-
 -export_type([attr/0,
               cdata/0,
               element/0,
@@ -70,8 +68,7 @@ xml_size({Key, Value}) ->
 -spec xml_sort(item() | [item()]) -> item() | [item()].
 xml_sort(#xmlcdata{} = Cdata) ->
     Cdata;
-xml_sort(#xmlel{} = El) ->
-    #xmlel{ attrs = Attrs, children = Children } = El,
+xml_sort(#xmlel{ attrs = Attrs, children = Children } = El) ->
     El#xmlel{
       attrs = lists:sort(Attrs),
       children = [ xml_sort(C) || C <- Children ]
@@ -108,8 +105,7 @@ to_iolist(#xmlel{} = Element, Pretty) ->
     to_binary_nif(Element, Pretty);
 to_iolist([Element], Pretty) ->
     to_iolist(Element, Pretty);
-to_iolist([_ | _] = Elements, Pretty) ->
-    Head = hd(Elements),
+to_iolist([Head | _] = Elements, Pretty) ->
     [Last | RevChildren] = lists:reverse(tl(Elements)),
     case {Head, Last} of
         {#xmlstreamstart{name = Name, attrs = Attrs},
