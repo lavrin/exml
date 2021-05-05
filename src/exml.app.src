@@ -1,9 +1,16 @@
 {application, exml,
- [
-  {description, "XML parsing library"},
-  {vsn, git},
+ [{description, "Erlang fast XML parsing library"},
+  {vsn, "3.0.4"},
   {registered, []},
-  {applications, [kernel,
-                  stdlib]},
-  {env, []}
+  {applications,
+   [kernel,
+    stdlib
+   ]},
+  {env, []},
+  {modules, []},
+  {maintainers, ["ESL"]},
+  {pkg_name, "hexml"},
+  {licenses, ["Apache 2.0", "Boost Software License 1.0 (C++ code)", "GPL (tests)"]},
+  {links, [{"GitHub", "https://github.com/esl/exml/"}]},
+  {exclude_files, ["c_src/exml.d"]}
  ]}.
