@@ -1,5 +1,5 @@
 %%%-------------------------------------------------------------------
-%%% @copyright (C) 2011, Erlang Solutions Ltd.
+%%% @copyright (C) 2011-2021, Erlang Solutions Ltd.
 %%% @doc Easy navigation in XML trees
 %%% @end
 %%%-------------------------------------------------------------------
@@ -34,12 +34,40 @@
 
 -export_type([path/0]).
 
-%% @doc gets the element/attr/cdata contained in the leftmost path
+%% @doc Gets the element/attr/cdata contained in the leftmost path
+%% Find an element in the xml tree by a path
+%% that is pattern-matched against such xml tree structure
+%%
+%% For example, given an xml document like
+%% ```
+%% <message from='alice@localhost' to='alice@localhost/res1' id='id-1'>
+%%   <result xmlns='urn:xmpp:mam:2' id='BGCH2R2950G1'>
+%%     <forwarded xmlns='urn:xmpp:forward:0'>
+%%       <delay xmlns='urn:xmpp:delay' stamp='2021-05-05T08:36:19Z' from='bob@localhost/res1'/>
+%%       <message from='bob@localhost/res1' xmlns='jabber:client' xml:lang='en' to='alice@localhost/res1' type='chat'>
+%%         <body>Message from bob to alice</body>
+%%       </message>
+%%     </forwarded>
+%%   </result>
+%% </message>
+%% '''
+%% The path
+%% ```
+%%   [{element_with_ns, <<"result">>, <<"urn:xmpp:mam:2">>},
+%%    {element_with_ns, <<"forwarded">>, <<"urn:xmpp:forward:0">>},
+%%    {element_with_ns, <<"message">>, <<"jabber:client">>},
+%%    {element, <<"body">>},
+%%    cdata}],
+%% '''
+%% would return `<<"Message from bob to alice">>'
+%% @end
 -spec path(exml:element(), path()) -> exml:element() | binary() | undefined.
 path(Element, Path) ->
     path(Element, Path, undefined).
 
-%% @doc gets the element/attr/cdata in the leftmost possible described path
+%% @doc Gets the element/attr/cdata in the leftmost possible described path.
+%% Like `path/2' but returns the given `Default' if no element matches the path.
+%%% @see path/2
 -spec path(exml:element(), path(), Other) -> exml:element() | binary() | Other.
 path(#xmlel{} = Element, [], _) ->
     Element;
@@ -63,6 +91,7 @@ path(_, _, Default) ->
     Default.
 
 %% @doc gets the elements/attrs/cdatas reachable by the described path
+%% @see path/2
 -spec paths(exml:element(), path()) -> [exml:element() | binary()].
 paths(#xmlel{} = Element, []) ->
     [Element];
@@ -205,10 +234,17 @@ subelements_with_attr(#xmlel{children = Children}, AttrName, Value) ->
 cdata(#xmlel{children = Children}) ->
     list_to_binary([C || #xmlcdata{content = C} <- Children]).
 
+%% @doc Query attribute value by name.
+%% Returns the attribute value associated with `Name' if `Element' contains such attribute.
+%% Otherwise returns `undefined'
 -spec attr(exml:element(), binary()) -> binary() | undefined.
 attr(Element, Name) ->
     attr(Element, Name, undefined).
 
+%% @doc Query attribute value by name.
+%% Returns the attribute value associated with `Name' if `Element' contains such attribute.
+%% Otherwise returns `Default'
+%% @see attr/2
 -spec attr(exml:element(), binary(), Other) -> binary() | Other.
 attr(#xmlel{attrs = Attrs}, Name, Default) ->
     case lists:keyfind(Name, 1, Attrs) of

@@ -1,8 +1,6 @@
 %%%-------------------------------------------------------------------
-%%% @author Michal Ptaszek <michal.ptaszek@erlang-solutions.com>
-%%% @copyright (C) 2011, Erlang Solutions Ltd.
+%%% @copyright (C) 2011-2021, Erlang Solutions Ltd.
 %%% @doc XML stream parser
-%%%
 %%% @end
 %%% Created : 21 Jul 2011 by Michal Ptaszek <michal.ptaszek@erlang-solutions.com>
 %%%-------------------------------------------------------------------

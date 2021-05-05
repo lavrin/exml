@@ -69,3 +69,8 @@ which prints:
 ```
 
 For an example of using the streaming API see `test/exml_stream_tests.erl`.
+
+XML Tree navigation
+=====
+
+The `exml_query` module exposes powerful helper functions to navigate the tree, please refer to the documentation available.

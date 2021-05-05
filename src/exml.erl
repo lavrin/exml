@@ -1,8 +1,6 @@
 %%%-------------------------------------------------------------------
-%%% @author Michal Ptaszek <michal.ptaszek@erlang-solutions.com>
-%%% @copyright (C) 2011, Erlang Solutions Ltd.
+%%% @copyright (C) 2011-2021, Erlang Solutions Ltd.
 %%% @doc
-%%%
 %%% @end
 %%% Created : 12 Jul 2011 by Michal Ptaszek <michal.ptaszek@erlang-solutions.com>
 %%%
@@ -55,15 +53,15 @@ xml_size({Key, Value}) ->
     + 4 % ="" and whitespace before
     + byte_size(Value).
 
-%% @doc Sort a (list of) `xmlel()`.
+%% @doc Sort a (list of) `xmlel()'.
 %%
-%% Sorting is defined as calling `lists:sort/1` at:
+%% Sorting is defined as calling `lists:sort/1' at:
 %% * all the `xmlel's provided (if there is a list of them) AND
 %% * all the `xmlel' elements' attributes recursively (the root and descendants) AND
 %% * all the `xmlel' children recursively (the root and descendants).
 %% The order is ascending.
 %%
-%% The implementation of this function is subtle modification of
+%% The implementation of this function is a subtle modification of
 %% https://github.com/erszcz/rxml/commit/e8483408663f0bc2af7896e786c1cdea2e86e43d
 -spec xml_sort(item() | [item()]) -> item() | [item()].
 xml_sort(#xmlcdata{} = Cdata) ->
