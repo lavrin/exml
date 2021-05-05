@@ -1,5 +1,9 @@
+#ifndef RAPIDXML_STATIC_POOL_SIZE
 #define RAPIDXML_STATIC_POOL_SIZE (10 * 1024 * 1024)
+#endif
+#ifndef RAPIDXML_DYNAMIC_POOL_SIZE
 #define RAPIDXML_DYNAMIC_POOL_SIZE (2 * 1024 * 1024)
+#endif
 
 #include "rapidxml.hpp"
 #include "rapidxml_print.hpp"

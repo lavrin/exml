@@ -74,3 +74,9 @@ XML Tree navigation
 =====
 
 The `exml_query` module exposes powerful helper functions to navigate the tree, please refer to the documentation available.
+
+
+Notes
+=====
+
+The implementation uses C++ thread-local memory pools of size 10MB by default (override `RAPIDXML_STATIC_POOL_SIZE` and/or `RAPIDXML_DYNAMIC_POOL_SIZE` at compilation time if desired differently), to maximise cache locality and memory allocation patterns. To also improve performance, the NIF calls are not checking input size, nor timeslicing themselves, nor running in dirty schedulers: that means that if called with too big inputs, the NIFs can starve the VM. It's up to the dev to throttle the input sizes and fine-tune the memory pool sizes.
