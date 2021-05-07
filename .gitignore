@@ -1,9 +1,14 @@
+_build/
 /.eunit/
 /.rebar/
 /c_src/*o
+/c_src/*d
+/c_src/*gcda
+/c_src/*gcno
 /deps/
 /ebin/
 /logs/
 /priv/*so
-/test/*.beam
-
+*.beam
+*.lock
+/rebar3

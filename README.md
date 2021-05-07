@@ -1,25 +1,21 @@
 exml
 ====
 
-[![Build Status](https://secure.travis-ci.org/esl/exml.png)](http://travis-ci.org/esl/exml) [![Coverage Status](https://coveralls.io/repos/github/esl/exml/badge.svg?branch=master)](https://coveralls.io/github/esl/exml?branch=master)
+[![GitHub Actions](https://github.com/esl/exml/workflows/ci/badge.svg?branch=master)](https://github.com/esl/exml/actions?query=workflow%3Aci+branch%3Amaster)
+[![Codecov](https://codecov.io/gh/esl/exml/branch/master/graph/badge.svg)](https://codecov.io/gh/esl/exml)
 
-**exml** is an Erlang library helpful with parsing XML streams
-and doing some basic XML structures manipulation.
+**exml** is an Erlang library for parsing XML streams and doing complex XML structures manipulation.
 
 Building
 ========
 
-**exml** is a rebar3-compatible OTP application, run `make` or
-`./rebar3 compile` in order to build it.
+**exml** is a rebar3-compatible OTP application, run `make` or `./rebar3 compile` in order to build it. A C++11 compiler is required.
 
-As a requirement, development headers for expat library are
-required.
 
 Using
 =====
 
-**exml** can parse both XML streams as well as single XML
-documents at once.
+**exml** can parse both XML streams as well as single XML documents at once.
 
 To parse a whole XML document:
 
@@ -35,9 +31,7 @@ El = #xmlel{name = <<"foo">>,
             children = [{xmlcdata, <<"Some Value">>}]},
 exml:to_list(El).
 ```
-
 or (pastable into `erl` shell):
-
 ```erlang
 El = {xmlel, <<"foo">>,
       [{<<"attr1">>, <<"bar">>}],
@@ -46,15 +40,13 @@ exml:to_list(El).
 ```
 
 Which results in:
-
 ```xml
 <foo attr1='bar'>Some Value</foo>
 ```
 
 `exml:to_binary/1` works similarly.
 
-There're also `exml:to_pretty_iolist/1,3` for a quick'n'dirty document
-preview (pastable into `erl`):
+There's also `exml:to_pretty_iolist/1,3` for a quick'n'dirty document preview (pastable into `erl`):
 
 ```erlang
 rr("include/exml.hrl").
@@ -66,9 +58,7 @@ El = #xmlel{name = <<"outer">>,
                                children = [#xmlel{name = <<"a">>}]}]}.
 io:format("~s", [exml:to_pretty_iolist(El)]).
 ```
-
 which prints:
-
 ```xml
 <outer attr2='val-two' attr1='val1'>
   <inner-childless/>
@@ -79,3 +69,14 @@ which prints:
 ```
 
 For an example of using the streaming API see `test/exml_stream_tests.erl`.
+
+XML Tree navigation
+=====
+
+The `exml_query` module exposes powerful helper functions to navigate the tree, please refer to the documentation available.
+
+
+Notes
+=====
+
+The implementation uses C++ thread-local memory pools of size 10MB by default (override `RAPIDXML_STATIC_POOL_SIZE` and/or `RAPIDXML_DYNAMIC_POOL_SIZE` at compilation time if desired differently), to maximise cache locality and memory allocation patterns. To also improve performance, the NIF calls are not checking input size, nor timeslicing themselves, nor running in dirty schedulers: that means that if called with too big inputs, the NIFs can starve the VM. It's up to the dev to throttle the input sizes and fine-tune the memory pool sizes.

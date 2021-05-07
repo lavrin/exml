@@ -1,6 +1,6 @@
 %%%-------------------------------------------------------------------
-%%% @author Konrad Zemek <konrad.zemek@erlang-solutions.com>
-%%% @copyright (C) 2018, Erlang Solutions Ltd.
+%%% @copyright (C) 2018-2021, Erlang Solutions Ltd.
+%%% @private
 %%%-------------------------------------------------------------------
 
 -module(exml_nif).

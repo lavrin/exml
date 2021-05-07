@@ -1,8 +1,6 @@
 %%%-------------------------------------------------------------------
-%%% @author Michal Ptaszek <michal.ptaszek@erlang-solutions.com>
-%%% @copyright (C) 2011, Erlang Solutions Ltd.
+%%% @copyright (C) 2011-2021, Erlang Solutions Ltd.
 %%% @doc
-%%%
 %%% @end
 %%% Created : 12 Jul 2011 by Michal Ptaszek <michal.ptaszek@erlang-solutions.com>
 %%%
@@ -21,8 +19,6 @@
          xml_size/1,
          xml_sort/1,
          to_pretty_iolist/1]).
-
--export([]).
 
 -export_type([attr/0,
               cdata/0,
@@ -57,21 +53,20 @@ xml_size({Key, Value}) ->
     + 4 % ="" and whitespace before
     + byte_size(Value).
 
-%% @doc Sort a (list of) `xmlel()`.
+%% @doc Sort a (list of) `xmlel()'.
 %%
-%% Sorting is defined as calling `lists:sort/1` at:
+%% Sorting is defined as calling `lists:sort/1' at:
 %% * all the `xmlel's provided (if there is a list of them) AND
 %% * all the `xmlel' elements' attributes recursively (the root and descendants) AND
 %% * all the `xmlel' children recursively (the root and descendants).
 %% The order is ascending.
 %%
-%% The implementation of this function is subtle modification of
+%% The implementation of this function is a subtle modification of
 %% https://github.com/erszcz/rxml/commit/e8483408663f0bc2af7896e786c1cdea2e86e43d
 -spec xml_sort(item() | [item()]) -> item() | [item()].
 xml_sort(#xmlcdata{} = Cdata) ->
     Cdata;
-xml_sort(#xmlel{} = El) ->
-    #xmlel{ attrs = Attrs, children = Children } = El,
+xml_sort(#xmlel{ attrs = Attrs, children = Children } = El) ->
     El#xmlel{
       attrs = lists:sort(Attrs),
       children = [ xml_sort(C) || C <- Children ]
@@ -108,8 +103,7 @@ to_iolist(#xmlel{} = Element, Pretty) ->
     to_binary_nif(Element, Pretty);
 to_iolist([Element], Pretty) ->
     to_iolist(Element, Pretty);
-to_iolist([_ | _] = Elements, Pretty) ->
-    Head = hd(Elements),
+to_iolist([Head | _] = Elements, Pretty) ->
     [Last | RevChildren] = lists:reverse(tl(Elements)),
     case {Head, Last} of
         {#xmlstreamstart{name = Name, attrs = Attrs},
