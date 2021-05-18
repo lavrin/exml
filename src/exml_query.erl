@@ -185,7 +185,9 @@ subelement_with_name_and_ns(Element, Name, NS, Default) ->
     case subelement(Element, Name, undefined) of
         undefined ->
             Default;
-        SubElement ->
+        #xmlcdata{} ->
+            Default;
+        #xmlel{} = SubElement ->
             subelement_or_default(SubElement, NS, Default)
     end.
 
