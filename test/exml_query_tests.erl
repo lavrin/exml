@@ -213,6 +213,10 @@ path_query_test() ->
                  exml_query:path(?MY_SPOON, [{element_with_ns, <<"urn:accidents">>},
                                              {attr, <<"no">>}])),
 
+    Msg = #xmlel{name = <<"message">>, children = [#xmlcdata{content = <<"x">>}]},
+    ?assertEqual(undefined,
+                 exml_query:path(Msg, [{element_with_ns, <<"x">>, <<"urn:wrong_ns">>}])),
+
     %% I couldn't find anything complex enough in that silly cartoon :[
     Qux = xml(<<"<foo><bar><baz a='b'>qux</baz></bar></foo>">>),
     ?assertEqual(<<"qux">>, exml_query:path(Qux, [{element, <<"bar">>},
