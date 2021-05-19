@@ -1,6 +1,6 @@
 {application, exml,
  [{description, "Erlang fast XML parsing library"},
-  {vsn, "3.0.4"},
+  {vsn, git},
   {registered, []},
   {applications,
    [kernel,
