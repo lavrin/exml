@@ -5,9 +5,6 @@
 
 -module(exml_nif).
 
--include("exml.hrl").
--include("exml_stream.hrl").
-
 -type parser() :: term().
 -type stream_element() :: exml:element() | exml_stream:start() | exml_stream:stop().
 
@@ -16,6 +13,11 @@
 -export_type([parser/0, stream_element/0]).
 
 -on_load(load/0).
+
+-include_lib("gradualizer/include/gradualizer.hrl").
+
+-include("exml.hrl").
+-include("exml_stream.hrl").
 
 %%%===================================================================
 %%% Public API
@@ -31,7 +33,7 @@ load() ->
                   Path ->
                       Path
               end,
-    erlang:load_nif(filename:join(PrivDir, ?MODULE_STRING), none).
+    erlang:load_nif(?assert_type(filename:join(PrivDir, ?MODULE_STRING), [char()]), none).
 
 -spec create(MaxChildSize :: non_neg_integer(), InfiniteStream :: boolean()) ->
                     {ok, parser()} | {error, Reason :: any()}.

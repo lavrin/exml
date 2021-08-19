@@ -79,6 +79,8 @@ free_parser(#parser{}) ->
 %%% Helpers
 %%%===================================================================
 
+-spec parse_all(exml_nif:parser(), [binary()], [exml_stream:element()]) -> R when
+      R :: {ok, [exml_stream:element()], [binary()]} | {error, any()}.
 parse_all(_Parser, [], Acc) ->
     {ok, lists:reverse(Acc), []};
 parse_all(Parser, Buffer, Acc) ->
@@ -92,6 +94,7 @@ parse_all(Parser, Buffer, Acc) ->
             Error
     end.
 
+-spec drop_offset([binary()], integer()) -> [binary()].
 drop_offset(Buffer, 0) ->
     Buffer;
 drop_offset([Front | Rest], Offset) when byte_size(Front) =< Offset ->
